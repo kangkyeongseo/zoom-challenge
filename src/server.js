@@ -1,3 +1,5 @@
+import http from "http";
+import SocketIO from "socket.io";
 import express from "express";
 
 const app = express();
@@ -9,4 +11,13 @@ app.use("/public", express.static(__dirname + "/public"));
 app.get("/", (req, res) => res.render("home"));
 app.get("/*", (req, res) => res.redirect("/"));
 
-app.listen(3000, () => console.log("Listening on http://localhost:3000"));
+const httpServer = http.createServer(app);
+const wsServer = SocketIO(httpServer);
+
+wsServer.on("connection", (socket) => {
+  console.log(socket);
+});
+
+httpServer.listen(3000, () =>
+  console.log("Listening on http://localhost:3000")
+);
