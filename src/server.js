@@ -51,7 +51,7 @@ wsServer.on("connection", (socket) => {
     });
   });
   socket.on("disconnect", () => {
-    wsServer.sockets.emit("room_chanege", publicRooms());
+    wsServer.sockets.emit("room_change", publicRooms());
   });
   socket.on("message", (message, roomName, done) => {
     socket.to(roomName).emit("message", `${socket.nickname} :  ${message}`);
@@ -60,6 +60,13 @@ wsServer.on("connection", (socket) => {
   socket.on("nickname", (nickname, done) => {
     socket["nickname"] = nickname;
     done();
+  });
+  socket.on("leave", (roomName, done) => {
+    socket.leave(roomName);
+    socket.to(roomName).emit("bye", socket.nickname, countRoom(roomName));
+    console.log(publicRooms());
+    done();
+    wsServer.sockets.emit("room_change", publicRooms());
   });
 });
 
