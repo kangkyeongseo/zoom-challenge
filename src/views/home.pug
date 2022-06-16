@@ -5,6 +5,27 @@ html(lang="en")
         meta(http-equiv="X-UA-Compatible", content="IE=edge")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title ZOOM
+        link(rel="stylesheet", href="https://unpkg.com/mvp.css") 
     body 
+        header 
+            h1 ZOOM 
+        main 
+            div#nickname
+                h3
+                form
+                    input(type="text" placeholder="Nickname" required )
+                    button Save
+            div#welcome
+                form 
+                    input(type="text" placeholder="Room Name" required )
+                    button Enter Room
+                h4 Open Rooms :
+                ul
+            div#room 
+                h3
+                ul 
+                form#message
+                    input(type="text" placeholder="Message" required )
+                    button Send
         script(src="/socket.io/socket.io.js")
         script(src="/public/app.js")
