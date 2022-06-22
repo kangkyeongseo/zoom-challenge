@@ -120,11 +120,37 @@ async function handleWelcomeSubmit(event) {
 
 welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 
+// Chat Form
+
+const chatBox = document.getElementById("chat");
+const chatForm = chatBox.querySelector("form");
+const chatList = chatBox.querySelector("ul");
+
+function addMessage(msg) {
+  const li = document.createElement("li");
+  li.innerText = msg;
+  chatList.append(li);
+}
+
+function handelChatForm(event) {
+  event.preventDefault();
+  const input = chatForm.querySelector("input");
+  if (myDataChannel) {
+    myDataChannel.send(input.value);
+  }
+  addMessage(`You : ${input.value}`);
+  input.value = "";
+}
+
+chatForm.addEventListener("submit", handelChatForm);
+
 // Socket code
 
 socket.on("welcome", async () => {
   myDataChannel = myPeerConnection.createDataChannel("chat");
-  myDataChannel.addEventListener("message", console.log);
+  myDataChannel.addEventListener("message", (message) => {
+    addMessage(message.data);
+  });
   const offer = await myPeerConnection.createOffer();
   myPeerConnection.setLocalDescription(offer);
   socket.emit("offer", offer, roomName);
@@ -133,7 +159,9 @@ socket.on("welcome", async () => {
 socket.on("offer", async (offer) => {
   myPeerConnection.addEventListener("datachannel", (event) => {
     myDataChannel = event.channel;
-    myDataChannel.addEventListener("message", console.log);
+    myDataChannel.addEventListener("message", (message) => {
+      addMessage(message.data);
+    });
   });
   myPeerConnection.setRemoteDescription(offer);
   const answer = await myPeerConnection.createAnswer();
