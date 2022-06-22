@@ -11,6 +11,7 @@ let cameraOff = false;
 let roomName;
 let myPeerConnection;
 let myDataChannel;
+let myNickName;
 
 async function getCamera() {
   try {
@@ -120,6 +121,21 @@ async function handleWelcomeSubmit(event) {
 
 welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 
+// NickName Form
+
+const nickNameBox = document.getElementById("nickName");
+const nickNameForm = nickNameBox.querySelector("form");
+
+function handleNicknameSubmit(event) {
+  event.preventDefault();
+  const input = nickNameForm.querySelector("input");
+  socket.emit("nickname", input.value);
+  myNickName = input.value;
+  input.value = "";
+}
+
+nickNameForm.addEventListener("submit", handleNicknameSubmit);
+
 // Chat Form
 
 const chatBox = document.getElementById("chat");
@@ -149,7 +165,7 @@ chatForm.addEventListener("submit", handelChatForm);
 socket.on("welcome", async () => {
   myDataChannel = myPeerConnection.createDataChannel("chat");
   myDataChannel.addEventListener("message", (message) => {
-    addMessage(message.data);
+    addMessage(`${myNickName} : ${message.data}`);
   });
   const offer = await myPeerConnection.createOffer();
   myPeerConnection.setLocalDescription(offer);
@@ -160,7 +176,7 @@ socket.on("offer", async (offer) => {
   myPeerConnection.addEventListener("datachannel", (event) => {
     myDataChannel = event.channel;
     myDataChannel.addEventListener("message", (message) => {
-      addMessage(message.data);
+      addMessage(`${myNickName} : ${message.data}`);
     });
   });
   myPeerConnection.setRemoteDescription(offer);
