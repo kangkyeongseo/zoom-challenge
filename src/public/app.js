@@ -95,9 +95,34 @@ muteBtn.addEventListener("click", handleMuteClick);
 cameraBtn.addEventListener("click", handleCameraClick);
 cameraSelect.addEventListener("input", handleCameraChange);
 
+// NickName Form
+
+const nickNameBox = document.getElementById("nickName");
+const nickNameForm = nickNameBox.querySelector("form");
+const welcomeBox = document.getElementById("welcome");
+const welcomeNickname = welcomeBox.querySelector("h3");
+
+welcomeBox.hidden = true;
+
+function startWelcome() {
+  nickNameBox.hidden = true;
+  welcomeBox.hidden = false;
+  welcomeNickname.innerText = `Hello ${myNickName}`;
+}
+
+function handleNicknameSubmit(event) {
+  event.preventDefault();
+  const input = nickNameForm.querySelector("input");
+  socket.emit("nickname", input.value);
+  myNickName = input.value;
+  input.value = "";
+  startWelcome();
+}
+
+nickNameForm.addEventListener("submit", handleNicknameSubmit);
+
 // Welcome Form (Join a Room)
 
-const welcomeBox = document.getElementById("welcome");
 const welcomeForm = welcomeBox.querySelector("form");
 const callBox = document.getElementById("call");
 
@@ -120,21 +145,6 @@ async function handleWelcomeSubmit(event) {
 }
 
 welcomeForm.addEventListener("submit", handleWelcomeSubmit);
-
-// NickName Form
-
-const nickNameBox = document.getElementById("nickName");
-const nickNameForm = nickNameBox.querySelector("form");
-
-function handleNicknameSubmit(event) {
-  event.preventDefault();
-  const input = nickNameForm.querySelector("input");
-  socket.emit("nickname", input.value);
-  myNickName = input.value;
-  input.value = "";
-}
-
-nickNameForm.addEventListener("submit", handleNicknameSubmit);
 
 // Chat Form
 
