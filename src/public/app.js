@@ -124,9 +124,23 @@ nickNameForm.addEventListener("submit", handleNicknameSubmit);
 // Welcome Form (Join a Room)
 
 const welcomeForm = welcomeBox.querySelector("form");
+const roomList = welcomeBox.querySelector("ul");
 const callBox = document.getElementById("call");
+const roomTitle = callBox.querySelector("h3");
 
 callBox.hidden = true;
+
+function addList(rooms) {
+  roomList.innerHTML = "";
+  if (rooms.lenght === 0) {
+    return;
+  }
+  rooms.forEach((room) => {
+    const li = document.createElement("li");
+    li.innerText = room;
+    roomList.appendChild(li);
+  });
+}
 
 async function startCall() {
   welcomeBox.hidden = true;
@@ -141,6 +155,7 @@ async function handleWelcomeSubmit(event) {
   await startCall();
   socket.emit("join_room", input.value);
   roomName = input.value;
+  roomTitle.innerText = roomName;
   input.value = "";
 }
 
@@ -169,6 +184,22 @@ function handelChatForm(event) {
 }
 
 chatForm.addEventListener("submit", handelChatForm);
+
+// Leave Room
+
+const leaveBtn = document.getElementById("leave");
+
+function leaveRoom() {
+  callBox.hidden = true;
+  welcomeBox.hidden = false;
+}
+
+function handleLeaveBtn() {
+  socket.emit("leave", roomName);
+  leaveRoom();
+}
+
+leaveBtn.addEventListener("click", handleLeaveBtn);
 
 // Socket code
 
@@ -201,6 +232,10 @@ socket.on("answer", (answer) => {
 
 socket.on("ice", (ice) => {
   myPeerConnection.addIceCandidate(ice);
+});
+
+socket.on("publicRoom", (rooms) => {
+  addList(rooms);
 });
 
 // RTC code

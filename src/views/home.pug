@@ -16,10 +16,13 @@ html(lang="en")
                     button Save
             div#welcome
                 h3
+                ul
                 form
                     input(type="text" placeholder="Room Name" required)
                     button Enter Room
-            div#call               
+            div#call
+                h3
+                button#leave Leave               
                 div#myStream
                     video#myFace(autoplay, playsinline, width="400", height="400")
                     button#mute Mute
