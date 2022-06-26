@@ -101,12 +101,15 @@ const nickNameBox = document.getElementById("nickName");
 const nickNameForm = nickNameBox.querySelector("form");
 const welcomeBox = document.getElementById("welcome");
 const welcomeNickname = welcomeBox.querySelector("h3");
+const changeBtn = document.getElementById("changeName");
 
 welcomeBox.hidden = true;
+changeBtn.hidden = true;
 
 function startWelcome() {
   nickNameBox.hidden = true;
   welcomeBox.hidden = false;
+  changeBtn.hidden = false;
   welcomeNickname.innerText = `Hello ${myNickName}`;
 }
 
@@ -119,7 +122,13 @@ function handleNicknameSubmit(event) {
   startWelcome();
 }
 
+function handleChangeNickname() {
+  nickNameBox.hidden = false;
+  changeBtn.hidden = true;
+}
+
 nickNameForm.addEventListener("submit", handleNicknameSubmit);
+changeBtn.addEventListener("click", handleChangeNickname);
 
 // Welcome Form (Join a Room)
 
