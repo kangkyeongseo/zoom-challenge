@@ -1,6 +1,7 @@
 import http from "http";
 import SocketIO from "socket.io";
 import express from "express";
+import { getuid } from "process";
 
 const app = express();
 
@@ -29,9 +30,18 @@ function publicRooms() {
   return publicRooms;
 }
 
+function userList() {
+  const {
+    sockets: { sockets },
+  } = wsServer;
+  const usersNickname = [];
+  sockets.forEach((value, key) => usersNickname.push(value.nickname));
+  return usersNickname;
+}
+
 wsServer.on("connection", (socket) => {
   socket["nickname"] = "Anon";
-  console.log(socket.id);
+  socket.emit("userList", userList());
   socket.emit("publicRoom", publicRooms());
   socket.on("join_room", (roomName) => {
     socket.join(roomName);
@@ -48,11 +58,11 @@ wsServer.on("connection", (socket) => {
     socket.to(roomName).emit("ice", ice);
   });
   socket.on("nickname", (name) => {
-    socket["nikcname"] = name;
+    socket["nickname"] = name;
+    wsServer.sockets.emit("userList", userList());
   });
   socket.on("leave", (roomName) => {
     socket.leave(roomName);
-    console.log(publicRooms());
     wsServer.sockets.emit("publicRoom", publicRooms());
   });
 });

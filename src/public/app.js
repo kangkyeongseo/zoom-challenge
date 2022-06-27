@@ -133,15 +133,28 @@ changeBtn.addEventListener("click", handleChangeNickname);
 // Welcome Form (Join a Room)
 
 const welcomeForm = welcomeBox.querySelector("form");
-const roomList = welcomeBox.querySelector("ul");
+const roomList = welcomeBox.querySelector("#roomList");
+const userList = welcomeBox.querySelector("#userList");
 const callBox = document.getElementById("call");
 const roomTitle = callBox.querySelector("h3");
 
 callBox.hidden = true;
 
-function addList(rooms) {
+function addUserList(users) {
+  userList.innerHTML = "";
+  if (users.length === 0) {
+    return;
+  }
+  users.forEach((user) => {
+    const li = document.createElement("li");
+    li.innerText = user;
+    userList.appendChild(li);
+  });
+}
+
+function addRoomList(rooms) {
   roomList.innerHTML = "";
-  if (rooms.lenght === 0) {
+  if (rooms.length === 0) {
     return;
   }
   rooms.forEach((room) => {
@@ -244,7 +257,11 @@ socket.on("ice", (ice) => {
 });
 
 socket.on("publicRoom", (rooms) => {
-  addList(rooms);
+  addRoomList(rooms);
+});
+
+socket.on("userList", (users) => {
+  addUserList(users);
 });
 
 // RTC code
