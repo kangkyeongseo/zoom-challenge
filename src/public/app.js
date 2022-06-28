@@ -116,10 +116,9 @@ function startWelcome() {
 function handleNicknameSubmit(event) {
   event.preventDefault();
   const input = nickNameForm.querySelector("input");
-  socket.emit("nickname", input.value);
+  socket.emit("nickname", input.value, startWelcome);
   myNickName = input.value;
   input.value = "";
-  startWelcome();
 }
 
 function handleChangeNickname() {
@@ -273,6 +272,12 @@ socket.on("publicRoom", (rooms) => {
 
 socket.on("userList", (users) => {
   addUserList(users);
+});
+
+const errorNotice = document.getElementById("errorMessage");
+
+socket.on("error_message", (errorMessage) => {
+  errorNotice.innerText = errorMessage;
 });
 
 // RTC code

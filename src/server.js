@@ -57,9 +57,14 @@ wsServer.on("connection", (socket) => {
   socket.on("ice", (ice, roomName) => {
     socket.to(roomName).emit("ice", ice);
   });
-  socket.on("nickname", (name) => {
-    socket["nickname"] = name;
-    wsServer.sockets.emit("userList", userList());
+  socket.on("nickname", (name, done) => {
+    if (userList().includes(name)) {
+      socket.emit("error_message", "This Nickname is already in use");
+    } else {
+      socket["nickname"] = name;
+      wsServer.sockets.emit("userList", userList());
+      done();
+    }
   });
   socket.on("leave", (roomName) => {
     socket.leave(roomName);
