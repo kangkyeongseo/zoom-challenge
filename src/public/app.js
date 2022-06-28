@@ -130,7 +130,7 @@ function handleChangeNickname() {
 nickNameForm.addEventListener("submit", handleNicknameSubmit);
 changeBtn.addEventListener("click", handleChangeNickname);
 
-// Welcome Form (Join a Room)
+// Welcome Form
 
 const welcomeForm = welcomeBox.querySelector("form");
 const roomList = welcomeBox.querySelector("#roomList");
@@ -161,6 +161,7 @@ function addRoomList(rooms) {
     const li = document.createElement("li");
     li.innerText = room;
     roomList.appendChild(li);
+    li.addEventListener("click", handleEnterRoom);
   });
 }
 
@@ -183,6 +184,16 @@ async function handleWelcomeSubmit(event) {
 
 welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 
+// Join Room
+
+async function handleEnterRoom(event) {
+  const enterRoomName = event.target.innerText;
+  await startCall();
+  socket.emit("join_room", enterRoomName);
+  roomName = enterRoomName;
+  roomTitle.innerText = enterRoomName;
+}
+
 // Chat Form
 
 const chatBox = document.getElementById("chat");
@@ -195,7 +206,7 @@ function addMessage(msg) {
   chatList.append(li);
 }
 
-function handelChatForm(event) {
+function handleChatForm(event) {
   event.preventDefault();
   const input = chatForm.querySelector("input");
   if (myDataChannel) {
@@ -205,7 +216,7 @@ function handelChatForm(event) {
   input.value = "";
 }
 
-chatForm.addEventListener("submit", handelChatForm);
+chatForm.addEventListener("submit", handleChatForm);
 
 // Leave Room
 
