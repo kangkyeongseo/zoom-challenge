@@ -194,7 +194,6 @@ async function handleEnterRoom(event) {
 }
 
 // Chat Form
-
 const chatBox = document.getElementById("chat");
 const chatForm = chatBox.querySelector("form");
 const chatList = chatBox.querySelector("ul");
